@@ -35,25 +35,6 @@ print(sum(1 for message in messages if matches(message, rules['0'])))
 rules['8'] = '42 | 42 8'
 rules['11'] = '42 31 | 42 11 31'
 
-# Memoize for great speed!
-import functools
-@functools.lru_cache(maxsize=None)
-def matches(message, rule):
-    if rule == '"a"':
-        return message == "a"
-    elif rule == '"b"':
-        return message == "b"
-    elif ' | ' in rule:
-        rule1, rule2 = rule.split(' | ')
-        return matches(message, rule1) or matches(message, rule2)
-    elif ' ' in rule:
-        rule1, rule2 = rule.split(' ', 1)
-        for i in range(1, len(message)):
-            if matches(message[0:i], rule1) and matches(message[i:], rule2):
-                return True
-        return False
-    else: # number
-        rule = rules[rule]
-        return matches(message, rule)
+matches.cache_clear() # Rules are different so cached values from PART 1 are wrong
 
 print(sum(1 for message in messages if matches(message, rules['0'])))
